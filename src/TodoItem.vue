@@ -1,5 +1,5 @@
 <script setup>
-import IconButton from './Button.vue';
+import Button from './Button.vue';
 
 const props = defineProps({
     task: Object,
@@ -15,7 +15,7 @@ const emit = defineEmits([
 
 const toggleStatus = (event) => { 
     //change the task status to done/active
-    emit('toggleStatus', props.index, event);
+    emit('toggleStatus', props.index, event.target.checked);
 };
 
 const delTask = () => {
@@ -30,7 +30,7 @@ const editTask = () => {
 
 const saveEditTask = (event) => {
     //saves new task edited
-    emit('saveEditTask', props.index, event);
+    emit('saveEditTask', props.index);
 };
 </script>
 
@@ -66,7 +66,7 @@ const saveEditTask = (event) => {
     <!--action buttons-->
     <div class="actions">
         <!--editing button-->
-        <IconButton
+        <Button
             icon="/pencil.jpg"
             alt="edit"
             title="Edit this item"
@@ -74,7 +74,7 @@ const saveEditTask = (event) => {
         />
 
         <!--delete button-->
-        <IconButton
+        <Button
             icon="/trash.jpg"
             alt="delete"
             title="Delete this item"
