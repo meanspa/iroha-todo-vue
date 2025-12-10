@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue';
 import Button from './Button.vue';
 
 const props = defineProps({
@@ -7,11 +8,13 @@ const props = defineProps({
 });
 
 const emit = defineEmits([
-    'toggleStatus',
-    'delTask',
-    'editTask',
-    'saveEditTask'
+    'toggleStatus',  //boolean value
+    'updateTask',  //new task name
+    'delTask',  //delete the task
 ]);
+
+const isEditing = ref(false);
+const editedName = ref(props.task.name);
 
 const toggleStatus = (event) => { 
     //change the task status to done/active
@@ -23,21 +26,28 @@ const delTask = () => {
     emit('delTask', props.index);
 };
 
-const editTask = () => {
+const startEdit = () => {
     //If it's already editing, do nothing
-    emit('editTask', props.index); 
+    isEditing.value = true;
+    editedName.value = props.task.name;
 };
 
-const saveEditTask = (event) => {
+const finishEdit = () => {
     //saves new task edited
-    emit('saveEditTask', props.index);
+    const trimmedName = editedName.value.trim();
+    if (trimmedName === '') {
+        //if empty, delete the task
+        emit('delTask', props.index);
+    } else {
+        //update the task name
+        emit('updateTask', props.index, trimmedName);
+    }
+    isEditing.value = false;
 };
 </script>
 
 <template>
-<li 
-    :class="{done: task.status === 'done'}"
->  
+<li :class="{done: task.status === 'done'}" >  
     <!--checkbox-->
     <input
         class="toggle" 
@@ -48,15 +58,16 @@ const saveEditTask = (event) => {
 
     <div class="content">
         <!--if editing-->
-        <div v-if="task.editing">
+        <div v-if="isEditing">
             <input
                 type="text"
                 class="editing"
-                v-model="task.name"
-                @blur="saveEditTask(event)"
-                @keyup.enter="saveEditTask(event)"
+                v-model="editedName"
+                @blur="finishEdit"
+                @keyup.enter="finishEdit"
             />
         </div>
+
         <!--if not editing-->
         <div v-else>
             <span>{{ task.name }}</span>
@@ -70,7 +81,7 @@ const saveEditTask = (event) => {
             icon="/pencil.jpg"
             alt="edit"
             title="Edit this item"
-            @click="editTask"
+            @click="startEdit"
         />
 
         <!--delete button-->
@@ -78,7 +89,7 @@ const saveEditTask = (event) => {
             icon="/trash.jpg"
             alt="delete"
             title="Delete this item"
-            @click="delTask(index)"
+            @click="delTask"
         />
     </div>
 </li>

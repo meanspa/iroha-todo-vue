@@ -9,9 +9,8 @@ const { tasks, newTask } = storeToRefs(tasksStore);
 const {
     addTask,
     toggleStatus,
+    updateTask,
     delTask,
-    editTask,
-    saveEditTask,
     removeTask,
 } = tasksStore
 </script>
@@ -36,9 +35,8 @@ const {
             :task="task"
             :index="index"
             @toggleStatus="toggleStatus"
+            @updateTask="updateTask"
             @delTask="delTask"
-            @editTask="editTask"
-            @saveEditTask="saveEditTask"
         />  
     </ul>
 
