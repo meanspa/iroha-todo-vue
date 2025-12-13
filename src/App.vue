@@ -1,7 +1,7 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 import { store } from './store';
-import Button from './Button.vue';
+import IconButton from './IconButton.vue';
 import TodoItem from './TodoItem.vue';
 
 // Pinia store instance and refs
@@ -12,7 +12,6 @@ const { tasks, newTask } = storeToRefs(tasksStore);
 const {
     addTask,
     toggleStatus,
-    updateTask,
     delTask,
     removeTask,
 } = tasksStore
@@ -30,7 +29,7 @@ const {
             placeholder="Add a new task"
             v-model="newTask"
         />
-        <Button type="submit">Add</Button>
+        <IconButton type="submit">Add</IconButton>
     </form>
 
     <!--list of todo items-->
@@ -39,7 +38,7 @@ const {
             Render one ToDoItem component for each task in the tasks array.
             Props: task, index
                 props pass data down to the child component
-            Events: toggleStatus, updateTask, delTask
+            Events: toggleStatus, delTask
                 events listen for emitted events from the child component
                 and call the corresponding action in the store
         -->
@@ -49,14 +48,13 @@ const {
             :task="task"
             :index="index"
             @toggleStatus="toggleStatus"
-            @updateTask="updateTask"
             @delTask="delTask"
         />  
     </ul>
 
     <!--removes all tasks with status 'done'-->
     <div class="toolbar">
-        <Button @click="removeTask">Clear Completed</Button>
+        <IconButton @click="removeTask">Clear Completed</IconButton>
     </div>
   </div>
 </template>

@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import Button from './Button.vue';
+import IconButton from './IconButton.vue';
 
 // props passes from parent component(App.vue)
 // --- task: task object with name and status
@@ -12,11 +12,9 @@ const props = defineProps({
 
 // emits events to parent component(App.vue)
 // --- toggleStatus: tell parent that checkbox changed
-// --- updateTask: tell parent to update task name
 // --- delTask: tell parent to delete this task
 const emit = defineEmits([
     'toggleStatus',  //boolean value (done or not)
-    'updateTask',  //new task name
     'delTask',  //no value
 ]);
 
@@ -25,6 +23,7 @@ const emit = defineEmits([
 // --- editedName: temporary storage for edited task name
 const isEditing = ref(false);
 const editedName = ref(props.task.name);
+const timestamp = () => new Date().toISOString();
 
 const toggleStatus = (event) => {
     // called when checkbox is toggled
@@ -53,7 +52,9 @@ const finishEdit = () => {
         emit('delTask', props.index);
     } else {
         // otherwise, request update
-        emit('updateTask', props.index, trimmedName);
+        props.task.name = trimmedName;
+        // set updatedAt timestamp
+        props.task.updatedAt = timestamp();
     }
     // exit editing mode
     isEditing.value = false;
@@ -91,7 +92,7 @@ const finishEdit = () => {
     <!--action buttons: edit + delete-->
     <div class="todo-actions">
         <!--editing button: enters edit mode-->
-        <Button
+        <IconButton
             icon="/pencil.jpg"
             alt="edit"
             title="Edit this item"
@@ -99,7 +100,7 @@ const finishEdit = () => {
         />
 
         <!--delete button: requests deletion-->
-        <Button
+        <IconButton
             icon="/trash.jpg"
             alt="delete"
             title="Delete this item"
